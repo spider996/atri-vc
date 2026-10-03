@@ -132,12 +132,40 @@
   三处警示卡（小窗/分屏保前台、耳机没断、**扬声器外放**）全部红底红字；
   「扬声器外放」这条从灰色小字升级为红卡（用户点名要醒目）。纯说明性文字仍用灰。
 
-## 十、待办
+## 十、全量 APK + 首启自动导入 + 开源（2026-10-03 ✅）
 
-1. 端侧合成提速（当前 36–86 s / 3 秒语音）：prefill/AR attention、vits 加速
-2. 导出可变块长 net_g（**实时化前提**）
-3. 图优化消除冗余 Transpose + Q/DQ（预期 ~21%）
-4. TTS 模型分发（615MB 不能进 APK，需首启下载 + SHA 校验）
+### 全量 APK（941 MB，已真机验证）
+- 产物 `AtriVC/app/build/outputs/apk/debug/app-debug.apk` = **941.05 MB**；
+  桌面副本 `atri-vc-v1.0-full.apk`。
+- **15 个模型条目全部 STORED（未压缩）**，原始合计 908 MB。
+- 构建：`cd AtriVC && .\build-apk.ps1 -Full -Install`（`-Full` 会先跑 stage 脚本）。
+- **铁律 `noCompress += listOf("onnx","bin","data","refbin")`**：模型必须 STORED，
+  否则 `AssetManager.openFd()` 拿不到真实长度 → 无法做「大小一致即跳过」的幂等校验。
+- **幂等导入**：`dst.length() == assetSizeOf()` 才跳过；catch 分支必须 `delete()` 半截文件。
+- 真机全新安装：`copied=15`、`du -sh` = **912M**、零配置合成成功（AR 47 步 / 峰值 80.14%）。
+- ⚠️ `tools/stage_model_assets.py` **不含 txt 与 ref/**（主 assets 已提供）——
+  重复会导致 `mergeDebugAssets` 同名资源冲突直接构建失败。
+
+### 开源（本地仓库就绪，push 由用户做）
+- 分支 `main`，**74 文件 / 4.45 MB**，`.git` **3.0 MB**；`README.md` + `LICENSE`(MIT+NOTICE) + `.gitignore` 齐备。
+- git 身份 `不太高性能萝卜籽 <402371919@bilibili>`，`core.autocrlf=false`。
+- ⚠️⚠️ **Git 只追加不删除**：误提交 551 个噪音文件后 `.git` 涨到 1.8 GB，
+  后续 commit 只"删除"**不会回收**。唯一解法 = `rm -rf .git && git init` 重建。
+  **判据：`du -sh .git` 才是真实体积，`git ls-files` 不算。**
+- ⚠️⚠️ **`.gitignore` 通配必须限定路径**：裸 `*.png` 会吞掉 App 图标
+  （mipmap/drawable 全是 png）。一律写 `/tools/**/*.png`、`/AtriVC/deliverables*/`，
+  再用 `!/AtriVC/app/src/main/res/**` 放行。
+- ⚠️ `git rm --cached` 前须先 `git reset --hard HEAD`，否则删除不被记录；
+  `git add -u` 会把 HEAD 里该删的已跟踪文件又带回来。
+- **941 MB APK 不能进 Git 仓库**（GitHub 单文件硬限 100 MB）→ 走 **Release 附件**。
+
+## 十一、待办
+
+1. **用户手动**：`git remote add origin <URL>` → `git push -u origin main`；
+   再把 941 MB APK 传 Release。
+2. 端侧合成提速（当前 36–86 s / 3 秒语音）：prefill/AR attention、vits 加速
+3. 导出可变块长 net_g（**实时化前提**）
+4. 图优化消除冗余 Transpose + Q/DQ（预期 ~21%）
 5. 可选再压：bert INT4（288→~150MB）、vits 静态量化
 6. 主观听感验收（四情绪真机音频在 `tools/tts_device/*.wav`）
 7. **端到端 QQ 实测**：需用户开系统小窗 + 按住说话（自动化做不了：检测不到 QQ 录音态、无法注入手势）
