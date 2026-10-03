@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  自适应图标（API 26+）。
+  内容全部在 background 层（整幅立绘，出血铺满画布），
+  这样套上圆形 / 圆角方形 / squircle 任何遮罩都不会缺脸。
+  foreground 是一张 1x1 全透明占位，只是为了让 adaptive-icon 结构完整。
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_bg" />
+    <foreground android:drawable="@mipmap/ic_launcher_fg" />
+</adaptive-icon>

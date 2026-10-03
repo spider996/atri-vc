@@ -1,0 +1,34 @@
+MIT License
+
+Copyright (c) 2026 不太高性能萝卜籽
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+注意 / NOTICE
+
+上述 MIT 许可仅适用于本仓库中的**源代码**。
+
+仓库与发行版 APK 中可能包含的**模型权重**（.onnx / .data / .bin / .refbin）
+与**角色语音、立绘素材**，其版权属于各自的权利人
+（角色形象属于 ANIPLEX.EXE / Frontwing；基座模型遵循其原始许可）。
+
+这些素材**仅供个人学习与技术研究使用，禁止任何商业用途**。
+如权利人提出异议，将立即移除。

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  QQ 录音态监听的无障碍配置。
+
+  - packageNames 只填 QQ，避免被其它 App 的界面变化频繁唤醒（省电，也少误触发）
+  - eventTypes 只要窗口状态/内容变化：QQ 从聊天页切到「按住说话」时必然产生
+  - canRetrieveWindowContent=true：否则读不到界面文本，判据无从谈起
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/qq_watch_desc"
+    android:packageNames="com.tencent.mobileqq"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:notificationTimeout="100"
+    android:canRetrieveWindowContent="true"
+    android:settingsActivity="com.atri.vc.MainActivity" />

@@ -1,0 +1,126 @@
+# ================================================================
+# 亚托莉变声器 —— 仓库只放「源码 + 文档 + 可复现的脚本」
+# 模型权重、实验中间产物、真机日志与样音都不进版本库
+# ================================================================
+# 注意：通配规则一律「限定路径」，不要写裸的 *.png / *.wav / *.txt，
+# 否则会把 App 的图标资源（mipmap/drawable 全是 png）一起吞掉。
+# ================================================================
+
+# ---------------------------------------------------------------- 构建产物
+build/
+*/build/
+.gradle/
+.kotlin/
+*.apk
+*.aab
+*.keystore
+*.jks
+release/
+
+# ---------------------------------------------------------------- 机器相关配置
+# 含本机 SDK / JDK 绝对路径，每个人不一样
+local.properties
+
+# ---------------------------------------------------------------- 模型权重（一律不进仓库）
+# 用 tools/stage_model_assets.py 现场生成打包用的资源树
+AtriVC/model_assets/
+tools/model_assets/
+*.onnx
+*.data
+*.refbin
+*.pth
+*.ckpt
+*.pt
+*.safetensors
+*.npz
+*.npy
+*.index
+
+# 逐级对齐用的中间 dump（只出现在 tools/ 下，App 资源里没有）
+/tools/**/*.bin
+/tools/**/*.f32
+/tools/**/*.f16
+/tools/**/*.i32
+/tools/**/*.i64
+
+# ---------------------------------------------------------------- 实验 / 中间目录
+# 模型导出与量化实验的产物目录（体积以 GB 计）
+/tools/gsv_onnx*/
+/tools/onnx*/
+/tools/kotlin_out/
+/tools/android_ref/
+/tools/tts_baseline/
+/tools/rvc_baseline/
+/tools/tts_assets/
+/tools/tts_device/
+/tools/emotion_ab/
+/tools/prof/
+/tools/archive/
+/tools/shots/
+/tools/tmp*/
+
+# ---------------------------------------------------------------- tools 目录降噪
+# 这个目录里 90% 是「一次实验一个脚本 + 一份 dump txt」，不进仓库。
+# 唯一要保留的可复用工具是 stage_model_assets.py（打包资源树）。
+/tools/*.py
+!/tools/stage_model_assets.py
+/tools/_*
+/tools/tmp_*
+/tools/ui*
+/tools/*probe*
+/tools/verify_*
+/tools/*_build*
+/tools/*_run*
+/tools/*_log*
+/tools/*_dump*
+/tools/*.txt
+/tools/*.md
+/tools/*.json
+/tools/*.xml
+/tools/*.ps1
+/tools/*.err
+/tools/*.out
+/tools/*.key
+/tools/*.png
+/tools/*.jpg
+/tools/*.jpeg
+/tools/*.wav
+/tools/*.mp3
+
+# ---------------------------------------------------------------- 真机交付样音 / 截图
+# 二进制大文件，放 Release 附件或网盘，不进源码仓库
+/AtriVC/deliverables/
+/AtriVC/deliverables_real/
+/AtriVC/deliverables_ui/
+/AtriVC/deliverables_emu/
+
+# tools 子目录里的一次性产物（如 app_out 跑出来的样音、atri_emo 的情绪挑选记录）
+/tools/app_out/
+/tools/atri_emo/
+/tools/rvc_baseline/
+
+# ---------------------------------------------------------------- 例外：必须进仓库的资源
+# 1) App 图标、头像与界面资源（png/xml，别被上面的截图规则误伤）
+!/AtriVC/app/src/main/res/**
+# 2) 文本前端数据表（G2P 要读，缺了装完就直接报错）
+!/AtriVC/app/src/main/assets/tts/*.txt
+!/AtriVC/app/src/main/assets/tts/ref/*.txt
+
+# ---------------------------------------------------------------- IDE
+.idea/
+*.iml
+.vscode/
+captures/
+
+# ---------------------------------------------------------------- 日志 / 备份 / 系统
+*.log
+*.hprof
+*.bak
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------- 其它项目（与本仓库无关）
+CTReview/
+CTReview-debug.apk
+docs/

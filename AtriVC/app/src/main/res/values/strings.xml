@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">亚托莉变声器</string>
+    <string name="qq_watch_desc">在 QQ 里按住「说话」时，自动把变声器合成好的语音外放出去，
+        让 QQ 的麦克风录到并发送。仅在检测到 QQ 录音界面时触发，不读取聊天内容。</string>
+</resources>
