@@ -36,13 +36,36 @@
 
 | | 全量包 | 轻量包 |
 |---|---|---|
-| APK 体积 | **约 950 MB** | 约 63 MB |
+| APK 体积 | **约 941 MB** | 约 63 MB |
 | 模型 | 全部打包在 APK 内 | 需自行准备 |
 | 首次启动 | **自动导入，装完即用** | 手动推送到设备目录 |
 | 适合 | 分享给普通用户 | 开发调试 |
 
-全量包首次启动会解包约 900 MB 的模型到 App 私有目录（几十秒到几分钟，
-界面上有进度条）。**只需一次**，之后启动就是秒进。
+全量包首次启动会把约 910 MB 的模型解包到 App 私有目录（几秒到几十秒，
+界面上有进度条和文件名）。**只需一次**，之后启动就是秒进。
+
+模型在 APK 里是 **STORED（不压缩）** 存的，所以安装后能直接按真实字节数
+判断"已导入 / 未导入"，重复启动不会重解包。这也是为什么全量包体积接近模型原始大小。
+
+---
+
+## 仓库结构
+
+```
+.
+├── AtriVC/                       Android 工程（Gradle 三模块）
+│   ├── app/                      Compose UI + ORT Android
+│   ├── core/                     纯 Kotlin 算法（FFT / Mel / faiss / RVC 管线）
+│   ├── cli/                      JVM 逐级对齐工具
+│   ├── build-apk.ps1             一键打包（-Full 出全量包，-Install 顺带装机）
+│   └── *.md                      端侧移植 / 音频路由可行性 / 真机实测报告
+├── tools/
+│   └── stage_model_assets.py     汇总模型 → 打包资源树
+├── README.md
+└── LICENSE
+```
+
+模型权重、实验中间产物、真机样音都不在仓库里（见 `.gitignore`）。
 
 ---
 
@@ -74,7 +97,15 @@ python tools/stage_model_assets.py
 gradle :app:assembleDebug -PbundleModels=true
 ```
 
-产物约 950 MB，装到手机上首次启动会自动把模型解包出来。
+产物约 941 MB，装到手机上首次启动会自动把模型解包出来。
+
+PowerShell 下可以直接用封装好的脚本：
+
+```powershell
+cd AtriVC
+.\build-apk.ps1 -Full        # 出全量包
+.\build-apk.ps1 -Full -Install   # 出全量包并安装到设备
+```
 
 ### 手动推送模型（轻量包）
 
@@ -109,6 +140,19 @@ adb push ref_joy.refbin ref_sad.refbin ref_angry.refbin ref_calm.refbin $DST/tts
 
 ---
 
+## 下载现成的 APK
+
+GitHub 单文件限制 100 MB，**941 MB 的全量包无法直接放在仓库里**，走 Release 附件：
+
+→ 到本仓库的 **Releases** 页面下载 `atri-vc-v1.0-full.apk`。
+
+装的时候系统可能提示"未知来源"，允许即可。首次启动等进度条走完就能用。
+
+> 如果你的手机是 MIUI / HyperOS，安装大 APK 可能被"安装拦截"挡下，
+> 需要在开发者选项里关掉「MIUI 优化」或允许「通过 USB 安装」。
+
+---
+
 ## 模型是怎么来的
 
 仓库里**不含**训练好的模型权重，因为体积太大。模型需要自己准备：
@@ -125,7 +169,8 @@ adb push ref_joy.refbin ref_sad.refbin ref_angry.refbin ref_calm.refbin $DST/tts
 | `rmvpe_q8.onnx` | RMVPE（音高）静态 INT8 | 94 MB |
 | `index_mobile.bin` | .index 转移动端 faiss | 30 MB |
 
-导出脚本在 `tools/` 下（`export_net_g.py` / `export_hubert.py` / `export_index_mobile.py` 等）。
+> 导出与量化的完整脚本没有随仓库发布（体积与依赖都很重，且与个人环境强绑定）。
+> 量化分档的原则写在下面的「关键工程决策」里，照着复现即可。
 
 ### GPT-SoVITS 合成
 
@@ -143,6 +188,19 @@ adb push ref_joy.refbin ref_sad.refbin ref_angry.refbin ref_calm.refbin $DST/tts
 
 参考音频特征（4 条情绪）是**离线预计算**好的 `.refbin`，
 这样端侧就不需要 `ssl` / `sv` / `prompt` / `spec` 四个模型（省掉 543 MB）。
+
+### 模型文件怎么放
+
+`tools/stage_model_assets.py` 会把散落在各处的原始模型汇总成打包用的资源树
+（同卷用硬链接，不额外占空间）：
+
+```bash
+python tools/stage_model_assets.py
+# => AtriVC/model_assets/models/*.onnx    （RVC 三件套 + 检索库）
+#    AtriVC/model_assets/tts/*            （TTS 六个模型 + 共享权重）
+```
+
+它按脚本顶部的 `PLAN` 表找文件，所以换机器时改一下那几张路径即可。
 
 ---
 
