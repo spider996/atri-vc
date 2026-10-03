@@ -20,6 +20,17 @@ TAG = os.environ.get("GH_TAG", "v1.0")
 TITLE = os.environ.get("GH_TITLE", "亚托莉变声器 v1.0（全量包，含模型）")
 API = "https://api.github.com"
 
+# 仓库主页信息（About 描述 + topics）
+DESCRIPTION = os.environ.get(
+    "GH_DESC",
+    "完全离线的 Android 变声器：端侧 RVC 音色转换 + GPT-SoVITS 语音合成，"
+    "免 root，音频不出手机。",
+)
+TOPICS = [
+    "android", "rvc", "gpt-sovits", "onnxruntime", "voice-changer",
+    "tts", "offline", "kotlin", "jetpack-compose", "on-device-ai",
+]
+
 # 待上传的 APK：按顺序找第一个存在的。可用 GH_APK 环境变量直接指定。
 # 附件名单独用 ASSET_NAME（ASCII），避免下载链接里出现中文。
 ASSET_NAME = os.environ.get("GH_ASSET_NAME", "atri-vc-v1.0-full.apk")
@@ -175,11 +186,20 @@ def cmd_status(token):
                 a["name"], a["size"] / 1048576, a["download_count"], a["browser_download_url"]))
 
 
+def cmd_meta(token):
+    """设置仓库 About 描述与 topics。"""
+    r = api("PATCH", "%s/repos/%s" % (API, REPO), token, {"description": DESCRIPTION})
+    print("description -> %s" % r.get("description"))
+    t = api("PUT", "%s/repos/%s/topics" % (API, REPO), token, {"names": TOPICS})
+    print("topics      -> %s" % ", ".join(t.get("names", [])))
+
+
 def main():
     action = sys.argv[1] if len(sys.argv) > 1 else "status"
     token = get_token()
     {"check": cmd_check, "create": cmd_create,
-     "upload": cmd_upload, "status": cmd_status}[action](token)
+     "upload": cmd_upload, "status": cmd_status,
+     "meta": cmd_meta}[action](token)
 
 
 if __name__ == "__main__":
