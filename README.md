@@ -144,7 +144,9 @@ adb push ref_joy.refbin ref_sad.refbin ref_angry.refbin ref_calm.refbin $DST/tts
 
 GitHub 单文件限制 100 MB，**941 MB 的全量包无法直接放在仓库里**，走 Release 附件：
 
-→ 到本仓库的 **Releases** 页面下载 `atri-vc-v1.0-full.apk`。
+**→ [下载 `atri-vc-v1.0-full.apk`（941 MB）](https://github.com/spider996/atri-vc/releases/latest)**
+
+（也可以在仓库右侧的 **Releases** 栏里找到。已内置全部模型，装完即用。）
 
 装的时候系统可能提示"未知来源"，允许即可。首次启动等进度条走完就能用。
 

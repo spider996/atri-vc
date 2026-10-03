@@ -61,9 +61,10 @@ tools/model_assets/
 
 # ---------------------------------------------------------------- tools 目录降噪
 # 这个目录里 90% 是「一次实验一个脚本 + 一份 dump txt」，不进仓库。
-# 唯一要保留的可复用工具是 stage_model_assets.py（打包资源树）。
+# 唯一要保留的可复用工具是 stage_model_assets.py（打包资源树）与 gh_release.py（发布）
 /tools/*.py
 !/tools/stage_model_assets.py
+!/tools/gh_release.py
 /tools/_*
 /tools/tmp_*
 /tools/ui*
